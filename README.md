@@ -17,7 +17,7 @@ Banner轮播图
               implementation 'com.github.Wiser-Wong:BannerView:1.0.0'
       }
 
-## 使用方法
+## 使用说明
     bannerPagerView.setPages(this, new BannerHolder<String>() {
 
           private AppCompatImageView ivBanner;
