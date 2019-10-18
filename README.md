@@ -2,7 +2,7 @@
 Banner轮播图
 
 ## 截图
-![images](https://github.com/Wiser-Wong/BannView/blob/master/images/banner.gif)
+![images](https://github.com/Wiser-Wong/BannerView/blob/master/images/banner.gif)
 
 ## 环境配置
 
