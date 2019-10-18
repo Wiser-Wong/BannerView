@@ -405,6 +405,13 @@ class BannerView extends BannerInterceptScrollView {
 		return this;
 	}
 
+	public boolean isCircle() {
+		if (adapter != null) {
+			return adapter.isCircle();
+		}
+		return false;
+	}
+
 	/**
 	 * 设置默认预加载条目
 	 *

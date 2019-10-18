@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bumptech.glide.Glide;
 import com.wiser.banner.BannerHolder;
+import com.wiser.banner.BannerPagerAdapter;
 import com.wiser.banner.BannerPagerView;
 
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 
@@ -42,7 +44,27 @@ public class MainActivity extends FragmentActivity {
 			@Override public void bindData(Context context, int position, String data) {
 				if (!TextUtils.isEmpty(data)) Glide.with(context).load(data).thumbnail(0.1f).into(ivBanner);
 			}
-		}, imageUrls).isDot(true, Color.YELLOW, Color.RED, BannerPagerView.RIGHT_DOT).setCircle(true).startTurning(1200);
+		}, imageUrls).isDot(true, Color.YELLOW, Color.RED, BannerPagerView.RIGHT_DOT).setOnItemClickListener(new BannerPagerAdapter.OnItemClickListener() {
+			@Override
+			public void setOnItemListener(View view, int position) {//点击监听
+				Toast.makeText(MainActivity.this,"点击位置：-->>" + position,Toast.LENGTH_LONG).show();
+			}
+		}).addOnPageChangeListener(new BannerPagerView.OnPageChangeListener() {//滚动监听
+			@Override
+			public void onPageScrolled(int i, float v, int i1) {
+
+			}
+
+			@Override
+			public void onPageSelected(int i) {
+
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int i) {
+
+			}
+		}).startTurning(2200);
 
 	}
 

@@ -21,7 +21,7 @@ public class BannerPagerAdapter extends PagerAdapter {
 	/**
 	 * 数据
 	 */
-	private List mItems;
+	private List				mItems;
 
 	private FragmentActivity	activity;
 
@@ -61,6 +61,10 @@ public class BannerPagerAdapter extends PagerAdapter {
 
 	public List getItems() {
 		return mItems;
+	}
+
+	public int getItemCounts() {
+		return mItems == null ? 0 : mItems.size();
 	}
 
 	public Object getItem(int position) {

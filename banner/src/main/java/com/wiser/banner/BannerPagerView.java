@@ -6,8 +6,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -45,7 +45,7 @@ public class BannerPagerView extends FrameLayout implements ViewPager.OnPageChan
 
 	private boolean					isColor			= true;
 
-	private boolean					isCircle		= false;
+	private boolean					isFirstLoad		= true;
 
 	private OnPageChangeListener	onPageChangeListener;
 
@@ -153,6 +153,7 @@ public class BannerPagerView extends FrameLayout implements ViewPager.OnPageChan
 	 * @return
 	 */
 	public BannerPagerView setPages(FragmentActivity activity, BannerHolder holder, List list) {
+		isFirstLoad = true;
 		if (bannerView != null) bannerView.setPages(activity, holder, list);
 		return this;
 	}
@@ -176,7 +177,14 @@ public class BannerPagerView extends FrameLayout implements ViewPager.OnPageChan
 	public BannerPagerView setCircle(boolean isCircle) {
 		if (bannerView != null) {
 			bannerView.setCircle(isCircle);
-			this.isCircle = isCircle;
+		}
+		if (isDot && isFirstLoad && dotLayout != null && dotLayout.getChildCount() > 0) {
+			isFirstLoad = false;
+			if (isColor) {
+				((PointView) dotLayout.getChildAt(0)).setColor(selectColor);
+			} else {
+				((AppCompatImageView) dotLayout.getChildAt(0)).setImageResource(selectRes);
+			}
 		}
 		return this;
 	}
@@ -193,7 +201,7 @@ public class BannerPagerView extends FrameLayout implements ViewPager.OnPageChan
 	}
 
 	// Banner适配器实例
-	public PagerAdapter adapter() {
+	public BannerPagerAdapter adapter() {
 		if (bannerView != null) {
 			return bannerView.adapter();
 		}
@@ -232,13 +240,13 @@ public class BannerPagerView extends FrameLayout implements ViewPager.OnPageChan
 	 */
 	private void createDot() {
 		this.isDot = true;
-		if (adapter() != null && adapter().getCount() > 1) {
+		if (adapter() != null && adapter().getItemCounts() > 1) {
 			dotLayout = new LinearLayout(getContext());
 			LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 			params.gravity = Gravity.BOTTOM;
 			dotLayout.setGravity(CENTER_DOT);
 			dotLayout.setLayoutParams(params);
-			for (int i = 0; i < adapter().getCount(); i++) {
+			for (int i = 0; i < adapter().getItemCounts(); i++) {
 				View view;
 				if (isColor) {
 					PointView pointView = new PointView(getContext());
@@ -390,7 +398,7 @@ public class BannerPagerView extends FrameLayout implements ViewPager.OnPageChan
 	private void changeDot(int index) {
 		if (adapter() != null) {
 			if (dotLayout != null && dotLayout.getChildCount() > 0) {
-				if (isCircle) {
+				if (bannerView.isCircle()) {
 					int position = index % dotLayout.getChildCount();
 					for (int i = 0; i < dotLayout.getChildCount(); i++) {
 						if (isColor) {
@@ -435,9 +443,9 @@ public class BannerPagerView extends FrameLayout implements ViewPager.OnPageChan
 	@Override public void onPageSelected(int i) {
 		if (isDot) changeDot(i);
 		if (onPageChangeListener != null) {
-			if (adapter() != null && adapter().getCount() > 0) {
-				if (isCircle) {
-					onPageChangeListener.onPageSelected(i % adapter().getCount());
+			if (adapter() != null && adapter().getItemCounts() > 0) {
+				if (bannerView.isCircle()) {
+					onPageChangeListener.onPageSelected(i % adapter().getItemCounts());
 				} else {
 					onPageChangeListener.onPageSelected(i);
 				}
@@ -470,4 +478,12 @@ public class BannerPagerView extends FrameLayout implements ViewPager.OnPageChan
 
 		void onPageScrollStateChanged(int i);
 	}
+
+	@Override protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+		stopScroll();
+		onPageChangeListener = null;
+		dotLayout = null;
+	}
+
 }
